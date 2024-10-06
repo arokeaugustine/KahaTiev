@@ -28,6 +28,13 @@ namespace KahaTiev.Services
             return products;
         }
 
+        public async Task<List<Product>> Packages(Guid guid)
+        {
+           // var product = await _context.Products.FirstOrDefaultAsync(u => u.id == guid); 
+            var packages = await _context.Products.Where(x => x.Guid == guid).Include(x => x.Packages).ToListAsync();
+            return packages;
+        }
+
 
     }
 }

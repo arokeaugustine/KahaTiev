@@ -23,5 +23,7 @@ public partial class Package
 
     public bool IsDeleted { get; set; }
 
+    public string? Interest { get; set; }
+
     public virtual Product Product { get; set; } = null!;
 }
