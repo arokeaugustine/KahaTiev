@@ -1,5 +1,6 @@
 using KahaTiev.Contact.Services;
 using KahaTiev.Models;
+using KahaTiev.Services;
 using KahaTiev.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,8 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
+builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<IInvestService, InvestService>();
 
 var app = builder.Build();
 

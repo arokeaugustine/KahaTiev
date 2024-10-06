@@ -23,5 +23,7 @@ public partial class User
 
     public bool IsDeleted { get; set; }
 
+    public DateTime DateCreated { get; set; }
+
     public virtual Role Role { get; set; } = null!;
 }

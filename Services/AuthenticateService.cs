@@ -13,10 +13,12 @@ namespace KahaTiev.Contact.Services
     {
         private readonly KahaTievContext _context;
         private readonly IConfiguration _configuration;
-        public AuthenticateService(KahaTievContext context, IConfiguration configuration)
+        private readonly IMailService _mailservice;
+        public AuthenticateService(KahaTievContext context, IConfiguration configuration, IMailService mailservice)
         {
             _context = context;
             _configuration = configuration;
+            _mailservice = mailservice;
         }
 
         public async Task<Response> Register(UserRegistrationDTO userRegistration)
@@ -39,7 +41,7 @@ namespace KahaTiev.Contact.Services
                     message = "Provided passwords must correlate!"
                 };
             }
-            var checker = _context.Users.Any(x => x.EmailAddress == userRegistration.EmailAddress);
+           /* var checker = _context.Users.Any(x => x.EmailAddress == userRegistration.EmailAddress);
             if (checker)
             {
                 return new Response
@@ -48,7 +50,7 @@ namespace KahaTiev.Contact.Services
                     message = "Duplicate user not allowed!"
                 };
 
-            }
+            }*/
 
             var user = new User
             {
@@ -61,19 +63,21 @@ namespace KahaTiev.Contact.Services
 
             _context.Users.Add(user);
             var save = await _context.SaveChangesAsync();
-            if (save > 0)
+            if (save < 0)
             {
                 return new Response
                 {
-                    status = true,
-                    message = "Account creation successful"
+                    status = false,
+                    message = "An error occured while trying to create this account"
                 };
             }
 
+            var sendMail = await SendWelcomeMail(user);
+
             return new Response
             {
-                status = false,
-                message = "An error occured while trying to create this account"
+                status = true,
+                message = "Account creation successful"
             };
         }
 
@@ -126,6 +130,25 @@ namespace KahaTiev.Contact.Services
 
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private async Task<bool> SendWelcomeMail(User user)
+        {
+            var mailbody = $"Dear {user.FirstName} <br><br>" +
+                "It is our pleasure to have you onboard our platform as we go through this agricultural revolution together" +
+                "Please receive our warmest regards" +
+                "<br>" +
+                "Best regards,";
+
+            var mailrequest = new MailDTO
+            {
+                Subject = "Welcome to KahaTiev",
+                Body = mailbody,
+                ToAddress = user.EmailAddress
+            };
+
+            return await _mailservice.SendMail(mailrequest);
+            
         }
     }
 }
