@@ -1,6 +1,7 @@
 ﻿using KahaTiev.DTOs;
 using KahaTiev.Models;
 using KahaTiev.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -41,7 +42,7 @@ namespace KahaTiev.Contact.Services
                     message = "Provided passwords must correlate!"
                 };
             }
-           /* var checker = _context.Users.Any(x => x.EmailAddress == userRegistration.EmailAddress);
+            var checker = _context.Users.Any(x => x.EmailAddress == userRegistration.EmailAddress);
             if (checker)
             {
                 return new Response
@@ -50,7 +51,7 @@ namespace KahaTiev.Contact.Services
                     message = "Duplicate user not allowed!"
                 };
 
-            }*/
+            }
 
             var user = new User
             {
@@ -81,32 +82,36 @@ namespace KahaTiev.Contact.Services
             };
         }
 
-        public async Task<Response> Login(LoginDTO login)
+        public async Task<LoginResponseDTO> Login(LoginDTO login)
         {
             var user = await _context.Users
                 .Include(x => x.Role)
-                .FirstOrDefaultAsync(x => x.EmailAddress == login.username && x.IsActive && !x.IsDeleted);
+                .FirstOrDefaultAsync(x => x.EmailAddress == login.Username && x.IsActive && !x.IsDeleted);
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(login.password, user.Password))
+            if (user == null || !BCrypt.Net.BCrypt.Verify(login.Password, user.Password))
             {
-                return new Response
+                return new LoginResponseDTO
                 {
-                    status = false,
-                    message = "Invalid username or password!"
+                    Status = false,
+                    Message = "Invalid username or password!"
                 };
 
             }
 
-            var token = GenerateJwtToken(user);
-            return new Response
+            return new LoginResponseDTO
             {
-                status = true,
-                message = token
+                Status = true,
+                Message = "authenticated successful",
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                EmailAddress = user.EmailAddress,
+                RoleId = user.RoleId,
+                RoleName = user.Role.Name
             };
 
         }
 
-        private string GenerateJwtToken(User user)
+        private async Task<string> GenerateJwtToken(User user)
         {
             var claims = new[]
             {
@@ -128,9 +133,9 @@ namespace KahaTiev.Contact.Services
                 );
 
 
-
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
 
         private async Task<bool> SendWelcomeMail(User user)
         {
@@ -148,7 +153,7 @@ namespace KahaTiev.Contact.Services
             };
 
             return await _mailservice.SendMail(mailrequest);
-            
+
         }
     }
 }

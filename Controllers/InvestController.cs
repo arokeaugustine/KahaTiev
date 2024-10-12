@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KahaTiev.Controllers
 {
+    [Authorize]
     public class InvestController : Controller
     {
         private readonly IInvestService _investService;
@@ -27,5 +28,6 @@ namespace KahaTiev.Controllers
             }
             return View(packages);
         }
+
     }
 }

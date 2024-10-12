@@ -26,15 +26,34 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Invest" asp-action="Index">Products</a>
                         </li>
-                      
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Authenticate" asp-action="Login">Login</a>
-                        </li>
 
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
 
+
+
+                        @if (User.Identity!.IsAuthenticated)
+                        {
+
+                            <form asp-controller="Authenticate" asp-action="Logout" method="post">
+                                @Html.AntiForgeryToken()
+                            <li class="nav-item">
+                                <button type="submit" class="btn btn-link">Logout</button>
+
+                            </li>      @* <a asp-controller="Authenticate" asp-action="Logout"> Loggg out</a> *@
+                            </form>
+
+                            
+                            }
+                            else
+                            {
+
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Authenticate" asp-action="Login">Login</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -45,7 +64,7 @@
             <div class="container">
                 @RenderBody()
             </div>
-           
+
         </main>
     </div>
 

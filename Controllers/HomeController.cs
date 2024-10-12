@@ -16,10 +16,12 @@ namespace KahaTiev.Controllers
 
         public IActionResult Index()
         {
+            var authenticated = User.Identity!.IsAuthenticated;
             return View();
         }
 
-      
+
+        [Authorize(Roles = "SuperAdmin")]
         public IActionResult Privacy()
         {
             return View();
