@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KahaTiev.Controllers
 {
-    [Authorize]
     public class InvestController : Controller
     {
         private readonly IInvestService _investService;
@@ -28,6 +27,14 @@ namespace KahaTiev.Controllers
             }
             return View(packages);
         }
+
+        public async Task<IActionResult> PaymentDetails(Guid id)
+        {
+            var package =  await _investService.Package(id);
+            return View(package);
+        }
+
+
 
     }
 }

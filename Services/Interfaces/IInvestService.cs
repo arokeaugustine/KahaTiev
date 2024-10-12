@@ -1,4 +1,5 @@
 ﻿using KahaTiev.DTOs;
+using KahaTiev.DTOs.Payment;
 using KahaTiev.Models;
 
 namespace KahaTiev.Services.Interfaces
@@ -6,6 +7,7 @@ namespace KahaTiev.Services.Interfaces
     public interface IInvestService
     {
         Task<List<ProductDTO>> Products();
-        Task<List<Product>> Packages(Guid guid);
+        Task<Product?> Packages(Guid guid);
+        Task<PaymentViewModel> Package(Guid guid);
     }
 }
