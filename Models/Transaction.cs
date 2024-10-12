@@ -16,4 +16,6 @@ public partial class Transaction
     public string Email { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
+
+    public bool IsSuccessful { get; set; }
 }

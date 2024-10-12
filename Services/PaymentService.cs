@@ -1,12 +1,13 @@
 ﻿using KahaTiev.DTOs;
 using KahaTiev.DTOs.Payment;
 using KahaTiev.Models;
+using KahaTiev.Services.Interfaces;
 using PayStack.Net;
 
 namespace KahaTiev.Services
 {
 
-    public class PaymentService
+    public class PaymentService : IPaymentService
     {
         private readonly IConfiguration _configuration;
         private readonly KahaTievContext _kahaTievContext;
@@ -21,44 +22,13 @@ namespace KahaTiev.Services
             payStackApi = new PayStackApi(token);
             _kahaTievContext = kahaTievContext;
         }
-        public async Task<Response> ProcessPayment(PaymentViewModel model)
+        public async Task<DataResponse> ProcessPayment(PaymentViewModel model)
         {
-            TransactionInitializeRequest request = new TransactionInitializeRequest
-            {
-                AmountInKobo = model.PaystackDTO.Amount * 100,
-                Email = model.PaystackDTO.Email,
-                Reference = GenerateTransactionRef(),
-                Currency = "NGN",
-                CallbackUrl = "http://localhost:22925/Payment/Verify"  
-            };
-
-            TransactionInitializeResponse response = payStackApi.Transactions.Initialize(request);
-            if (response.Status)
-            {
-                var transaction = new Transaction
-                {
-                    Amount = model.PaystackDTO.Amount,
-                    Email = model.PaystackDTO.Email,
-                    Name = model.PaystackDTO.Name,
-                    TransactionReference = request.Reference
-                }; 
-
-                _kahaTievContext.Transactions.Add(transaction); 
-                var save = await _kahaTievContext.SaveChangesAsync();
-                if (save > 0)
-                {
-                    return new Response
-                    {
-                        status = true,
-                        message = "Transaction Intialized successfully"
-                    };
-                }
-
-            }
+         
 
 
 
-            return new Response
+            return new DataResponse
             {
                 status = false,
                 message = "An error occured!"

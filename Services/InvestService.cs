@@ -38,21 +38,19 @@ namespace KahaTiev.Services
 
         public async Task<PaymentViewModel> Package(Guid guid)
         {
-            var package = _context.Packages.FirstOrDefault(x => x.Guid == guid);
+            var package = await _context.Packages
+                .Where(x => x.Guid == guid)
+                .Select(x => new PaymentViewModel
+                {
+                    packageGuid = x.Guid,
+                    PackageName = x.Name,
+                    PackageAmount = x.Amount,
+                })
+                .FirstOrDefaultAsync(); // Use FirstOrDefaultAsync to retrieve a single result.
 
-
-            var paymentViewModel = new PaymentViewModel();
-            if (package != null)
-            {
-                paymentViewModel.PackageDTO.Guid = package.Guid;
-                paymentViewModel.PackageDTO.Name = package.Name;
-                paymentViewModel.PackageDTO.ProductId = package.ProductId;
-                paymentViewModel.PackageDTO.IsActive = package.IsActive;
-                paymentViewModel.PackageDTO.Amount = package.Amount;
-            }
-
-            return paymentViewModel;
+            return package; // Return the result, no casting needed.
         }
+
 
 
     }

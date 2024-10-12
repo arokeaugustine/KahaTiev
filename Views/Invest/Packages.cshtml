@@ -44,10 +44,8 @@
                             }
                             @if (package.IsActive)
                             {
-                                <form>
-                                    <input type="hidden" name="Id" value="@package.Guid" value="" />
-                                    <button>Buy </button>
-                                </form>
+
+                                <a type="button" asp-route-id="@package.Guid" asp-controller="Invest" asp-action="PaymentDetails" >Pay</a>
 
                             }
                         </div>
