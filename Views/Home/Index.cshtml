@@ -3,6 +3,16 @@
 }
 
 <div class="text-center">
+
+    @if (User.Identity!.IsAuthenticated)
+    {
+        <p>Welcome, @User.Identity.Name!</p>
+        <form asp-controller="Account" asp-action="Logout" method="post">
+            <button type="submit" class="btn btn-link">Logout</button>
+        </form>
+    }
+
+
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
