@@ -1,5 +1,26 @@
 ﻿@using KahaTiev.DTOs
 @model LoginDTO;
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+@{
+    var error = TempData["ErrorMessage"];
+    if (error != null)
+    {
+        <script>
+            Swal.fire({
+                text: '@error',
+                icon: 'error',
+                confirmButtonText: 'Cool'
+            })
+        </script>
+    }
+}
+
+
+
 <div>
     <form asp-action="UserLogin" asp-controller="Account">
         @Html.AntiForgeryToken()

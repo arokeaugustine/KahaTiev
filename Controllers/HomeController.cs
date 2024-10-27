@@ -21,7 +21,7 @@ namespace KahaTiev.Controllers
         }
 
 
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Roles = "investor")]
         public IActionResult Privacy()
         {
             return View();
