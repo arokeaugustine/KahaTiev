@@ -22,7 +22,7 @@ namespace KahaTiev.Controllers
             var packages = await _investService.Packages(id);
             if (packages == null)
             {
-               /* Add a temp data variable that will send an alert to the index page when packages are null*/
+               /* Add a temp Data variable that will send an alert to the index page when packages are null*/
                 return RedirectToAction("Index");
             }
             return View(packages);

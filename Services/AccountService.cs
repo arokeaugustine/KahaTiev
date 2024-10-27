@@ -10,12 +10,12 @@ using System.Text;
 
 namespace KahaTiev.Contact.Services
 {
-    public class AuthenticateService : IAuthenticateService
+    public class AccountService : IAccountService
     {
         private readonly KahaTievContext _context;
         private readonly IConfiguration _configuration;
         private readonly IMailService _mailservice;
-        public AuthenticateService(KahaTievContext context, IConfiguration configuration, IMailService mailservice)
+        public AccountService(KahaTievContext context, IConfiguration configuration, IMailService mailservice)
         {
             _context = context;
             _configuration = configuration;
@@ -29,8 +29,8 @@ namespace KahaTiev.Contact.Services
             {
                 return new Response
                 {
-                    status = false,
-                    message = "Invalid data"
+                    Status = false,
+                    Message = "Invalid Data"
                 };
             }
 
@@ -38,8 +38,8 @@ namespace KahaTiev.Contact.Services
             {
                 return new Response
                 {
-                    status = false,
-                    message = "Provided passwords must correlate!"
+                    Status = false,
+                    Message = "Provided passwords must correlate!"
                 };
             }
             var checker = _context.Users.Any(x => x.EmailAddress == userRegistration.EmailAddress);
@@ -47,8 +47,8 @@ namespace KahaTiev.Contact.Services
             {
                 return new Response
                 {
-                    status = false,
-                    message = "Duplicate user not allowed!"
+                    Status = false,
+                    Message = "Duplicate user not allowed!"
                 };
 
             }
@@ -68,8 +68,8 @@ namespace KahaTiev.Contact.Services
             {
                 return new Response
                 {
-                    status = false,
-                    message = "An error occured while trying to create this account"
+                    Status = false,
+                    Message = "An error occured while trying to create this account"
                 };
             }
 
@@ -77,8 +77,8 @@ namespace KahaTiev.Contact.Services
 
             return new Response
             {
-                status = true,
-                message = "Account creation successful"
+                Status = true,
+                Message = "Account creation successful"
             };
         }
 
@@ -111,30 +111,76 @@ namespace KahaTiev.Contact.Services
 
         }
 
-        private async Task<string> GenerateJwtToken(User user)
+        public async Task<Response> ChangePassword(ChangePasswordDTO changePassword)
         {
-            var claims = new[]
+            if (changePassword == null)
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.EmailAddress),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.Name)
+                return new Response
+                {
+                    Status = false,
+                    Message = "old password and new password must be provided!"
+                };
+            }
+
+            if (string.IsNullOrEmpty(changePassword.ConfirmNewPassword) || string.IsNullOrEmpty(changePassword.NewPassword) || string.IsNullOrEmpty(changePassword.OldPassword))
+            {
+                return new Response
+                {
+                    Status = false,
+                    Message = "old password and new password must be provided!"
+                };
+            }
+
+            if (!string.Equals(changePassword.ConfirmNewPassword, changePassword.NewPassword))
+            {
+                return new Response
+                {
+                    Status = false,
+                    Message = "New password and confirm password must be the same!"
+                };
+            }
+
+            var user = await _context.Users
+                .Include(x => x.Role)
+                .FirstOrDefaultAsync(x => x.EmailAddress == changePassword.Email && x.IsActive && !x.IsDeleted);
+
+            if (user == null)
+            {
+                return new Response
+                {
+                    Status = false,
+                    Message = "Currently unable to retrieve user details!"
+                };
+
+            }
+
+            var confirmPassword = BCrypt.Net.BCrypt.Verify(changePassword.OldPassword, user.Password);
+            if (!confirmPassword)
+            {
+                return new Response
+                {
+                    Status = false,
+                    Message = "Old password is invalid!"
+                };
+            }
+            user.Password = BCrypt.Net.BCrypt.HashPassword(changePassword.NewPassword, workFactor: 12);
+            var save = _context.SaveChanges();
+            if (save > 0)
+            {
+                return new Response
+                {
+                    Status = true,
+                    Message = "Password changes successfully"
+                };
+            }
+            return new Response
+            {
+                Status = false,
+                Message = "An error occurred while saving"
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Issuer"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(75),
-                signingCredentials: cred
-                );
-
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
 
 
         private async Task<bool> SendWelcomeMail(User user)

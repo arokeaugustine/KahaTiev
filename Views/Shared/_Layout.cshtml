@@ -36,18 +36,21 @@
                         @if (User.Identity!.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <form asp-controller="Authenticate" asp-action="Logout"  method="post">
+                                <form asp-controller="Account" asp-action="Logout"  method="post">
                                 @Html.AntiForgeryToken()
                               <button type="submit" class="btn-link btn text-decoration-none">Logout</button>
 
                                 @* <a asp-controller="Authenticate" asp-action="Logout"> Loggg out</a> *@
                             </form>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ResetPassword">Update password</a>
+                            </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Authenticate" asp-action="Login">Login</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                         }
                     </ul>

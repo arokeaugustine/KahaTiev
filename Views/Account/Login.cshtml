@@ -1,7 +1,7 @@
 ﻿@using KahaTiev.DTOs
 @model LoginDTO;
 <div>
-    <form asp-action="UserLogin" asp-controller="Authenticate">
+    <form asp-action="UserLogin" asp-controller="Account">
         @Html.AntiForgeryToken()
         <div class="form-group">
             <label for="exampleInputEmail1">Email address</label>
@@ -14,5 +14,5 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <p>new user? <a asp-action="Register" asp-controller="Authenticate">register</a> with us</p>
+    <p>new user? <a asp-action="Register" asp-controller="Account">register</a> with us</p>
 </div>

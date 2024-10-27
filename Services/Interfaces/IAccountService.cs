@@ -2,10 +2,12 @@
 
 namespace KahaTiev.Services.Interfaces
 {
-    public interface IAuthenticateService
+    public interface IAccountService
     {
         Task<Response> Register(UserRegistrationDTO userRegistration);
         Task<LoginResponseDTO> Login(LoginDTO login);
-       
+        Task<Response> ChangePassword(ChangePasswordDTO changePassword);
+
+
     }
 }

@@ -2,14 +2,14 @@
 {
     public class Response
     {
-        public bool status { get; set; }
-        public string message { get; set; }
+        public bool Status { get; set; }
+        public string Message { get; set; } = string.Empty;
     }
 
     public class DataResponse
     {
-        public bool status { get; set; }
-        public string message { get; set; }
-        public object data { get; set; }
+        public bool Status { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public object? Data { get; set; }
     }
 }

@@ -30,8 +30,8 @@ namespace KahaTiev.Services
 
             return new DataResponse
             {
-                status = false,
-                message = "An error occured!"
+                Status = false,
+                Message = "An error occured!"
             };
 
 

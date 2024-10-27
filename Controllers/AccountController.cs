@@ -3,18 +3,20 @@ using KahaTiev.Models;
 using KahaTiev.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Security.Claims;
 
 namespace KahaTiev.Controllers
 {
-    public class AuthenticateController : Controller
+    public class AccountController : Controller
     {
-        private readonly IAuthenticateService _authenticateService;
+        private readonly IAccountService _accountService;
 
-        public AuthenticateController(IAuthenticateService authenticateService)
+        public AccountController(IAccountService accountService)
         {
-            _authenticateService = authenticateService;
+            _accountService = accountService;
         }
 
         public IActionResult Login() => View();
@@ -29,14 +31,14 @@ namespace KahaTiev.Controllers
 
         public async Task<IActionResult> UserRegistration(UserRegistrationDTO userRegistration)
         {
-            var response = await _authenticateService.Register(userRegistration).ConfigureAwait(false);
+            var response = await _accountService.Register(userRegistration).ConfigureAwait(false);
             return RedirectToAction("Login");
         }
 
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserLogin(LoginDTO login)
         {
-            var response = await _authenticateService.Login(login);
+            var response = await _accountService.Login(login);
 
             if (!response.Status)
             {
@@ -72,6 +74,32 @@ namespace KahaTiev.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize]
+        public async ValueTask<IActionResult> ResetPassword()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDTO changePassword)
+        {
+            TempData["changePassword"] = null;
+            if (!User.Identity!.IsAuthenticated)
+            {
+                TempData["changePassword"] = "Unable to retrieve user details";
+                return View(changePassword);
+            }
+            changePassword.Email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var response  = await _accountService.ChangePassword(changePassword);
+            TempData["changePassword"] = response;
+            if (response.Status)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+          
+            return RedirectToAction(nameof(ResetPassword));
         }
 
     }

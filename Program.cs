@@ -1,3 +1,4 @@
+
 using KahaTiev.Contact.Services;
 using KahaTiev.Models;
 using KahaTiev.Services;
@@ -28,18 +29,18 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Authenticate/Login";
-        options.LogoutPath = "/Authenticate/Logout";
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = false;
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.AccessDeniedPath= "/Authenticate/AccessDenied";
+        options.AccessDeniedPath= "/Account/AccessDenied";
     });
 
 
 
-builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IInvestService, InvestService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
