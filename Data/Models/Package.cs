@@ -1,23 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace KahaTiev.Models;
+namespace KahaTiev.Data.Models;
 
-public partial class Product
+public partial class Package
 {
     public int Id { get; set; }
 
     public Guid? Guid { get; set; }
 
+    public int ProductId { get; set; }
+
     public string Name { get; set; } = null!;
 
     public string? Description { get; set; }
 
-    public DateTime DateCreated { get; set; }
+    public decimal Amount { get; set; }
 
     public bool IsActive { get; set; }
 
+    public DateTime DateCreated { get; set; }
+
     public bool IsDeleted { get; set; }
 
-    public virtual ICollection<Package> Packages { get; set; } = new List<Package>();
+    public string? Interest { get; set; }
+
+    public virtual Product Product { get; set; } = null!;
 }

@@ -1,4 +1,4 @@
-﻿using KahaTiev.DTOs.Payment;
+﻿using KahaTiev.Data.DTOs.Payment;
 using KahaTiev.Models;
 using KahaTiev.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -30,32 +30,11 @@ namespace KahaTiev.Controllers
 
         public async Task<IActionResult> Index(PaymentViewModel model)
         {
-            var initialization = await _paymentService.ProcessPayment(model);
-            TransactionInitializeRequest request = new TransactionInitializeRequest
-            {
-                AmountInKobo = (int)(model.PackageAmount * 100),
-                Email = model.PayerEmail,
-                Reference = GenerateTransactionRef(),
-                Currency = "NGN",
-                CallbackUrl = "https://localhost:7098/Payment/Verify"
-            };
-
-            TransactionInitializeResponse response = payStackApi.Transactions.Initialize(request);
+            var response = await _paymentService.ProcessPayment(model);
+            
             if (response.Status)
-            {
-                var transaction = new Transaction
-                {
-                    Amount = model.PackageAmount,
-                    Email = model.PayerEmail,
-                    Name = model.PayerEmail,
-                    TransactionReference = request.Reference
-                };
-
-                _kahaTievContext.Transactions.Add(transaction);
-                _ = await _kahaTievContext.SaveChangesAsync();
+            {             
                return Redirect(response.Data.AuthorizationUrl);
-
-                
             }
             TempData["error"] = response.Message; 
             return View();

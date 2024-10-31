@@ -1,4 +1,4 @@
-﻿namespace KahaTiev.DTOs
+﻿namespace KahaTiev.Data.DTOs
 {
     public class UserRegistrationDTO
     {

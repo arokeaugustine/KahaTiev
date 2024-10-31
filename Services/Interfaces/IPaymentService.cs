@@ -1,10 +1,10 @@
-﻿using KahaTiev.DTOs;
-using KahaTiev.DTOs.Payment;
+﻿using KahaTiev.Data.DTOs.Payment;
+using PayStack.Net;
 
 namespace KahaTiev.Services.Interfaces
 {
     public interface IPaymentService
     {
-        Task<DataResponse> ProcessPayment(PaymentViewModel model);
+        Task<TransactionInitializeResponse> ProcessPayment(PaymentViewModel model);
     }
 }

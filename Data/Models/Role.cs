@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace KahaTiev.Models;
+namespace KahaTiev.Data.Models;
 
 public partial class Role
 {

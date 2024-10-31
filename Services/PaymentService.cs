@@ -1,6 +1,6 @@
-﻿using KahaTiev.DTOs;
-using KahaTiev.DTOs.Payment;
-using KahaTiev.Models;
+﻿using KahaTiev.Data.DTOs.Payment;
+using KahaTiev.Data.Enums;
+using KahaTiev.Data.Models;
 using KahaTiev.Services.Interfaces;
 using PayStack.Net;
 
@@ -22,18 +22,38 @@ namespace KahaTiev.Services
             payStackApi = new PayStackApi(token);
             _kahaTievContext = kahaTievContext;
         }
-        public async Task<DataResponse> ProcessPayment(PaymentViewModel model)
+        public async Task<TransactionInitializeResponse> ProcessPayment(PaymentViewModel model)
         {
-         
 
-
-
-            return new DataResponse
+            TransactionInitializeRequest request = new TransactionInitializeRequest
             {
-                Status = false,
-                Message = "An error occured!"
+                AmountInKobo = (int)(model.PackageAmount * 100),
+                Email = model.PayerEmail,
+                Reference = GenerateTransactionRef(),
+                Currency = "NGN",
+                CallbackUrl = _configuration["PayStack:callBackUrl"]
             };
 
+            TransactionInitializeResponse response = payStackApi.Transactions.Initialize(request);
+
+            if (response.Status)
+            {
+                var transaction = new Transaction
+                {
+                    Amount = model.PackageAmount,
+                    Email = model.PayerEmail,
+                    Name = model.PayerEmail,
+                    TransactionReference = request.Reference,
+                    TransactionType = nameof(TransactionType.Credit)
+                };
+
+                var addTrans =await _kahaTievContext.Transactions.AddAsync(transaction);
+
+                var save = await _kahaTievContext.SaveChangesAsync();
+                return response;
+            }
+
+            return response;
 
         }
 
@@ -42,7 +62,7 @@ namespace KahaTiev.Services
         private static string GenerateTransactionRef()
         {
             Random random = new Random((int)DateTime.Now.Ticks);
-            return random.Next(10000000, 9999999).ToString();
+            return random.Next(1000, 9999999).ToString();
         }
     }
 }

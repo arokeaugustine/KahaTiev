@@ -1,4 +1,4 @@
-﻿namespace KahaTiev.DTOs.Payment
+﻿namespace KahaTiev.Data.DTOs.Payment
 {
     public class PaymentViewModel
     {

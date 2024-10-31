@@ -1,4 +1,4 @@
-﻿namespace KahaTiev.DTOs
+﻿namespace KahaTiev.Data.DTOs
 {
     public class LoginResponseDTO
     {
@@ -9,5 +9,6 @@
         public string EmailAddress { get; set; } = string.Empty;
         public int RoleId { get; set; }
         public string RoleName { get; set; } = string.Empty;
+        public int UserId { get; set; }
     }
 }

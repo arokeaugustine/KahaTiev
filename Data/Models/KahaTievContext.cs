@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace KahaTiev.Models;
+namespace KahaTiev.Data.Models;
 
 public partial class KahaTievContext : DbContext
 {
@@ -86,6 +86,9 @@ public partial class KahaTievContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.TransactionReference).HasMaxLength(200);
+            entity.Property(e => e.TransactionType)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<User>(entity =>

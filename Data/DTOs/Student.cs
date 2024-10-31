@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace KahaTiev.DTOs
+namespace KahaTiev.Data.DTOs
 {
     public class Student
     {

@@ -1,4 +1,4 @@
-﻿using KahaTiev.DTOs;
+﻿using KahaTiev.Data.DTOs;
 using KahaTiev.Services.Interfaces;
 using RestSharp;
 using System.Net;

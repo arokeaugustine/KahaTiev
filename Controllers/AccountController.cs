@@ -1,5 +1,4 @@
-﻿using KahaTiev.DTOs;
-using KahaTiev.Models;
+﻿using KahaTiev.Data.DTOs;
 using KahaTiev.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -51,6 +50,7 @@ namespace KahaTiev.Controllers
                 new Claim(ClaimTypes.Email, response.EmailAddress),
                 new Claim(ClaimTypes.Role, response.RoleName),
                 new Claim(ClaimTypes.Name, $"{response.FirstName} {response.LastName}"),
+             //   new Claim(ClaimTypes.use)
 
             };
 

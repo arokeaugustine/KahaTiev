@@ -1,5 +1,5 @@
-﻿using KahaTiev.DTOs;
-using KahaTiev.Models;
+﻿using KahaTiev.Data.DTOs;
+using KahaTiev.Data.Models;
 using KahaTiev.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +39,7 @@ namespace KahaTiev.Contact.Services
                 return new Response
                 {
                     Status = false,
-                    Message = "Provided passwords must correlate!"
+                    Message = "Provided passwords must be the same"
                 };
             }
             var checker = _context.Users.Any(x => x.EmailAddress == userRegistration.EmailAddress);
@@ -48,7 +48,7 @@ namespace KahaTiev.Contact.Services
                 return new Response
                 {
                     Status = false,
-                    Message = "Duplicate user not allowed!"
+                    Message = "user already exists!"
                 };
 
             }
@@ -106,7 +106,8 @@ namespace KahaTiev.Contact.Services
                 LastName = user.LastName,
                 EmailAddress = user.EmailAddress,
                 RoleId = user.RoleId,
-                RoleName = user.Role.Name
+                RoleName = user.Role.Name,
+                UserId = user.Id,
             };
 
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace KahaTiev.Models;
+namespace KahaTiev.Data.Models;
 
 public partial class Transaction
 {
@@ -18,4 +18,6 @@ public partial class Transaction
     public DateTime CreatedAt { get; set; }
 
     public bool IsSuccessful { get; set; }
+
+    public string? TransactionType { get; set; }
 }

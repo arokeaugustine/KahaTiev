@@ -1,5 +1,5 @@
-﻿using KahaTiev.DTOs;
-using KahaTiev.DTOs.Payment;
+﻿using KahaTiev.Data.DTOs;
+using KahaTiev.Data.DTOs.Payment;
 using KahaTiev.Models;
 using KahaTiev.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
